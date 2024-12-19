@@ -1,0 +1,43 @@
+<svg width="300" height="100" viewBox="0 0 300 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Background (for demonstration, can be omitted if placed on dark site background) -->
+  <rect width="300" height="100" fill="#0B0C10"/>
+
+  <!-- Central Geometric Shape (Icon) -->
+  <!-- A stylized, interconnected shape to represent nodes and transitions -->
+  <g transform="translate(40,50) scale(0.6)">
+    <!-- Outer polygon representing a complex network node -->
+    <polygon 
+      points="0,-40 34.64,-20 34.64,20 0,40 -34.64,20 -34.64,-20" 
+      stroke="url(#grad1)" stroke-width="2" fill="none" />
+    
+    <!-- Inner "A" shape -->
+    <path d="M -20 10 L 0 -20 L 20 10" stroke="url(#grad2)" stroke-width="2" fill="none"/>
+    <line x1="-10" y1="0" x2="10" y2="0" stroke="url(#grad2)" stroke-width="2"/>
+
+    <!-- Orbital line (Quantum swirl) -->
+    <ellipse cx="0" cy="0" rx="28" ry="8" stroke="url(#grad3)" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <!-- Text: CryptoAutomata -->
+  <text x="90" y="60" font-family="sans-serif" font-size="24" fill="#3A9FFD" font-weight="300">
+    Crypto
+    <tspan fill="#9E4DFF" font-weight="600">Automata</tspan>
+  </text>
+
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="grad1" x1="0" y1="-40" x2="0" y2="40">
+      <stop offset="0%" stop-color="#3A9FFD"/>
+      <stop offset="100%" stop-color="#9E4DFF"/>
+    </linearGradient>
+    <linearGradient id="grad2" x1="-20" y1="-20" x2="20" y2="10">
+      <stop offset="0%" stop-color="#3A9FFD"/>
+      <stop offset="100%" stop-color="#9E4DFF"/>
+    </linearGradient>
+    <linearGradient id="grad3" x1="-28" y1="0" x2="28" y2="0">
+      <stop offset="0%" stop-color="#9E4DFF"/>
+      <stop offset="100%" stop-color="#3A9FFD"/>
+    </linearGradient>
+  </defs>
+</svg>
