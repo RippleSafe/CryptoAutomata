@@ -7,7 +7,7 @@
 ![Build](https://img.shields.io/badge/build-passing-success)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-<img src="https://raw.githubusercontent.com/NubsCarson/CryptoAutomata/main/public/logo.png" width="200" />
+<img src="Draw-DFA/public/logo.svg" width="300" alt="CryptoAutomata Logo" />
 
 *The future of network visualization and state machine design.*
 
