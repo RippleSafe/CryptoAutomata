@@ -2,6 +2,18 @@ import React, { useState, useCallback, useEffect } from 'react';
 import DfaNfaVisualizer from './Canvas';
 import './App.css';
 import logo from './logo.svg';
+import NetworkStats from './components/NetworkStats';
+import WalletButton from './components/WalletButton';
+
+const AI_LORE = [
+    "Initializing Quantum Neural Core...",
+    "Calibrating State Matrices...",
+    "Synchronizing Network Nodes...",
+    "Establishing Neural Pathways...",
+    "Activating Quantum Processors...",
+    "Loading AI Consciousness...",
+    "System Ready for Neural Interface"
+];
 
 const VersionIndicator = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -124,196 +136,27 @@ const ANIMATIONS = {
     glow: 'glow'
 };
 
-const WalletButton = ({ onWalletChange, onThemeChange, onAnimationChange, onTemplateSelect }) => {
-    const [isConnected, setIsConnected] = useState(false);
-    const [walletAddress, setWalletAddress] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [showWalletPopup, setShowWalletPopup] = useState(false);
-    const [selectedTheme, setSelectedTheme] = useState('default');
-    const [selectedAnimation, setSelectedAnimation] = useState('none');
-    const [showFeatures, setShowFeatures] = useState(false);
-
-    const connectWallet = useCallback(async () => {
-        if (isLoading) return;
-        
-        setError(null);
-        setIsLoading(true);
-
-        try {
-            if (typeof window.solana === 'undefined') {
-                setShowWalletPopup(true);
-                setIsLoading(false);
-                return;
-            }
-
-            const resp = await window.solana.connect();
-            const address = resp.publicKey.toString();
-            
-            setWalletAddress(address);
-            setIsConnected(true);
-            onWalletChange({ connected: true, address });
-        } catch (err) {
-            console.error('Wallet connection error:', err);
-            setError(err.message.includes('User rejected') 
-                ? 'Connection rejected' 
-                : 'Connection error');
-        } finally {
-            setIsLoading(false);
-        }
-    }, [onWalletChange, isLoading]);
-
-    const disconnectWallet = useCallback(() => {
-        if (window.solana) {
-            window.solana.disconnect();
-            setIsConnected(false);
-            setWalletAddress('');
-            setError(null);
-            onWalletChange({ connected: false, address: null });
-        }
-    }, [onWalletChange]);
-
-    const handleThemeChange = (theme) => {
-        setSelectedTheme(theme);
-        onThemeChange(NODE_THEMES[theme]);
-    };
-
-    const handleAnimationChange = (animation) => {
-        setSelectedAnimation(animation);
-        onAnimationChange(animation);
-    };
-
-    const handleTemplateSelect = (template) => {
-        onTemplateSelect(template);
-    };
-
-    const saveToBlockchain = async () => {
-        if (!isConnected) return;
-        // This is a placeholder for actual blockchain saving functionality
-        console.log('Saving to blockchain...');
-        // Show success message
-        setError('State saved to blockchain successfully!');
-        setTimeout(() => setError(null), 3000);
-    };
-
-    return (
-        <div className="wallet-container">
-            {showWalletPopup && (
-                <div className="wallet-popup">
-                    <div className="wallet-popup-content">
-                        <h3>Phantom Wallet Required</h3>
-                        <p>To use this feature, you need to install the Phantom wallet.</p>
-                        <div className="wallet-popup-buttons">
-                            <a 
-                                href="https://phantom.com/download" 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="wallet-download-button"
-                            >
-                                Download Phantom
-                            </a>
-                            <button 
-                                className="wallet-popup-close" 
-                                onClick={() => setShowWalletPopup(false)}
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-            <button 
-                className={`wallet-adapter-button ${isLoading ? 'loading' : ''}`}
-                onClick={isConnected ? disconnectWallet : connectWallet}
-                disabled={isLoading}
-            >
-                {isLoading ? 'Connecting...' : 
-                 isConnected ? `Connected: ${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}` : 
-                 'Connect Phantom Wallet'}
-            </button>
-            {isConnected && error && (
-                <div className={error.includes('success') ? 'wallet-success' : 'wallet-error'}>
-                    {error}
-                </div>
-            )}
-            {isConnected && (
-                <div className="wallet-info">
-                    <button 
-                        className="features-toggle"
-                        onClick={() => setShowFeatures(!showFeatures)}
-                    >
-                        {showFeatures ? 'Hide Features' : 'Show Features'}
-                    </button>
-                    {showFeatures && (
-                        <div className="premium-features">
-                            <div className="feature-section">
-                                <h4>🎨 Node Themes</h4>
-                                <select 
-                                    value={selectedTheme}
-                                    onChange={(e) => handleThemeChange(e.target.value)}
-                                    className="theme-select"
-                                >
-                                    {Object.keys(NODE_THEMES).map(theme => (
-                                        <option key={theme} value={theme}>
-                                            {theme.charAt(0).toUpperCase() + theme.slice(1)}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            
-                            <div className="feature-section">
-                                <h4>✨ Animations</h4>
-                                <select 
-                                    value={selectedAnimation}
-                                    onChange={(e) => handleAnimationChange(e.target.value)}
-                                    className="animation-select"
-                                >
-                                    {Object.keys(ANIMATIONS).map(animation => (
-                                        <option key={animation} value={animation}>
-                                            {animation.charAt(0).toUpperCase() + animation.slice(1)}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            
-                            <div className="feature-section">
-                                <h4>🌟 Premium Templates</h4>
-                                <select 
-                                    onChange={(e) => handleTemplateSelect(PREMIUM_TEMPLATES[e.target.value])}
-                                    className="template-select"
-                                >
-                                    <option value="">Select Template</option>
-                                    {PREMIUM_TEMPLATES.map((template, index) => (
-                                        <option key={index} value={index}>
-                                            {template.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            
-                            <div className="feature-section">
-                                <h4>🔒 Blockchain Save</h4>
-                                <button 
-                                    className="save-button"
-                                    onClick={saveToBlockchain}
-                                >
-                                    Save Current State
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
-        </div>
-    );
-};
-
 const App = () => {
     const [xp, setXp] = useState(0);
     const maxXp = 100;
     const [walletState, setWalletState] = useState({ connected: false, address: null });
     const [currentTheme, setCurrentTheme] = useState(NODE_THEMES.default);
     const [currentAnimation, setCurrentAnimation] = useState(ANIMATIONS.none);
+    const [states, setStates] = useState([]);
+    const [transitions, setTransitions] = useState([]);
+    const [showPremiumFeatures, setShowPremiumFeatures] = useState(false);
+    const [currentLoreIndex, setCurrentLoreIndex] = useState(0);
+    const [showLore, setShowLore] = useState(true);
+
+    // AI Lore Animation Effect
+    useEffect(() => {
+        if (currentLoreIndex < AI_LORE.length && showLore) {
+            const timer = setTimeout(() => {
+                setCurrentLoreIndex(prev => prev + 1);
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [currentLoreIndex, showLore]);
 
     const handleAction = (points) => {
         setXp(prev => Math.min(prev + points, maxXp));
@@ -338,6 +181,15 @@ const App = () => {
         }
     };
 
+    // Update states and transitions
+    const handleStateChange = (newStates) => {
+        setStates(newStates);
+    };
+
+    const handleTransitionChange = (newTransitions) => {
+        setTransitions(newTransitions);
+    };
+
     // Load Solana Web3 script
     useEffect(() => {
         const script = document.createElement('script');
@@ -352,11 +204,124 @@ const App = () => {
 
     return (
         <div className="App">
+            <div className="right-panel">
+                <WalletButton />
+                {/* Premium Features Panel */}
+                <div className="premium-features">
+                    <button 
+                        className="features-toggle"
+                        onClick={() => setShowPremiumFeatures(!showPremiumFeatures)}
+                    >
+                        {showPremiumFeatures ? 'Hide Premium Features' : 'Show Premium Features'} 
+                        <span className="premium-badge">PRO</span>
+                    </button>
+                    
+                    {showPremiumFeatures && (
+                        <div className="feature-sections">
+                            {/* Theme Selection */}
+                            <div className="feature-section">
+                                <h4>Node Theme <span className="premium-badge">PRO</span></h4>
+                                <select 
+                                    className="theme-select"
+                                    value={currentTheme === NODE_THEMES.default ? 'default' : 
+                                           currentTheme === NODE_THEMES.neon ? 'neon' :
+                                           currentTheme === NODE_THEMES.cyber ? 'cyber' : 'quantum'}
+                                    onChange={(e) => {
+                                        const theme = NODE_THEMES[e.target.value];
+                                        if (theme) {
+                                            setCurrentTheme(theme);
+                                            handleThemeChange(theme);
+                                        }
+                                    }}
+                                >
+                                    <option value="default">Default Theme</option>
+                                    <option value="neon">Neon Theme</option>
+                                    <option value="cyber">Cyber Theme</option>
+                                    <option value="quantum">Quantum Theme</option>
+                                </select>
+                            </div>
+
+                            {/* Animation Selection */}
+                            <div className="feature-section">
+                                <h4>Node Animation <span className="premium-badge">PRO</span></h4>
+                                <select 
+                                    className="animation-select"
+                                    value={currentAnimation}
+                                    onChange={(e) => {
+                                        setCurrentAnimation(e.target.value);
+                                        handleAnimationChange(e.target.value);
+                                    }}
+                                >
+                                    <option value="none">No Animation</option>
+                                    <option value="pulse">Pulse Effect</option>
+                                    <option value="glow">Glow Effect</option>
+                                </select>
+                            </div>
+
+                            {/* Template Selection */}
+                            <div className="feature-section">
+                                <h4>Premium Templates <span className="premium-badge">PRO</span></h4>
+                                <select 
+                                    className="template-select"
+                                    onChange={(e) => {
+                                        const template = PREMIUM_TEMPLATES.find(t => t.name === e.target.value);
+                                        if (template) {
+                                            handleTemplateSelect(template);
+                                        }
+                                    }}
+                                >
+                                    <option value="">Select a Template</option>
+                                    {PREMIUM_TEMPLATES.map((template, index) => (
+                                        <option key={index} value={template.name}>
+                                            {template.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
             <header className="app-header">
                 <img src={logo} alt="CryptoAutomata Logo" className="app-logo" />
+                <h1 className="title">
+                    <span>CryptoAutomata</span>
+                </h1>
+                <p className="subtitle">The future of network visualization and state machine design.</p>
+                {/* AI Lore Messages */}
+                {showLore && currentLoreIndex < AI_LORE.length && (
+                    <div className="ai-lore">
+                        {AI_LORE.slice(0, currentLoreIndex + 1).map((message, index) => (
+                            <div key={index} className="system-message" style={{ 
+                                animationDelay: `${index * 0.5}s`,
+                                opacity: index === currentLoreIndex ? 1 : 0.6 
+                            }}>
+                                {message}
+                            </div>
+                        ))}
+                    </div>
+                )}
             </header>
             <VersionIndicator />
-            <DfaNfaVisualizer />
+
+            <DfaNfaVisualizer 
+                onStateChange={handleStateChange}
+                onTransitionChange={handleTransitionChange}
+                theme={currentTheme}
+                animation={currentAnimation}
+                onAction={handleAction}
+            />
+            <div className="visualizer-container">
+                <NetworkStats stats={{
+                    totalStates: states.length,
+                    acceptingStates: states.filter(s => s.accepting).length,
+                    totalTransitions: transitions.length,
+                    density: states.length > 0 ? transitions.length / (states.length * states.length) : 0,
+                    connected: true,
+                    deterministic: true
+                }} />
+            </div>
         </div>
     );
 };

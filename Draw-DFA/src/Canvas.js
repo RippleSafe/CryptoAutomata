@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import * as joint from 'jointjs';
 import { dia, shapes } from 'jointjs';
 
-const DfaNfaVisualizer = ({ onAction, walletConnected, theme, animation }) => {
+const DfaNfaVisualizer = ({ onAction, walletConnected, theme, animation, onStateChange, onTransitionChange }) => {
     const paperRef = useRef(null);
     const statesRef = useRef([]);  // Add ref to track current states
     const [graph, setGraph] = useState(null);
@@ -1406,6 +1406,16 @@ const DfaNfaVisualizer = ({ onAction, walletConnected, theme, animation }) => {
         setStates([...states, newNode]);
         onAction(5); // Award XP for adding a node
     };
+
+    // Update parent component when states change
+    useEffect(() => {
+        onStateChange?.(states);
+    }, [states, onStateChange]);
+
+    // Update parent component when transitions change
+    useEffect(() => {
+        onTransitionChange?.(transitions);
+    }, [transitions, onTransitionChange]);
 
     return (
         <div style={{ display: 'flex', alignItems: 'flex-start', minWidth: '1000px'}}>
