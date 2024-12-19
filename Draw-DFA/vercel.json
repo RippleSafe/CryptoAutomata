@@ -1,35 +1,32 @@
 {
     "version": 2,
-    "builds": [
-        {
-            "src": "Draw-DFA/package.json",
-            "use": "@vercel/static-build",
-            "config": {
-                "distDir": "Draw-DFA/build",
-                "buildCommand": "cd Draw-DFA && npm install && npm run build"
-            }
-        }
-    ],
+    "buildCommand": "npm run build",
+    "outputDirectory": "build",
+    "installCommand": "npm install",
+    "framework": "create-react-app",
     "routes": [
         {
             "src": "/static/(.*)",
-            "dest": "/Draw-DFA/build/static/$1"
+            "dest": "/static/$1"
         },
         {
             "src": "/favicon.ico",
-            "dest": "/Draw-DFA/build/favicon.ico"
+            "dest": "/favicon.ico"
         },
         {
             "src": "/manifest.json",
-            "dest": "/Draw-DFA/build/manifest.json"
+            "dest": "/manifest.json"
         },
         {
             "src": "/robots.txt",
-            "dest": "/Draw-DFA/build/robots.txt"
+            "dest": "/robots.txt"
+        },
+        {
+            "handle": "filesystem"
         },
         {
             "src": "/(.*)",
-            "dest": "/Draw-DFA/build/index.html"
+            "dest": "/index.html"
         }
     ],
     "env": {
